@@ -7,8 +7,6 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 def train_model(df_modele):
-    # Filtrer jeunes en emploi
-    df_modele = df_modele[(df_modele['age'] >= 15) & (df_modele['age'] <= 35) & (df_modele['status'] == 'employed')].copy()
 
     # Sélection des variables
     X = df_modele[['year', 'sector', 'gender', 'age', 'country']].copy()
