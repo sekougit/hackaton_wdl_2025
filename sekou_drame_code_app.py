@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 import os
 import seaborn as sns
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
 # ---------- Chargement des données traitées ----------
 @st.cache_data
