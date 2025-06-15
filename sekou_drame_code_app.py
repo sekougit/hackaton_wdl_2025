@@ -18,25 +18,10 @@ def load_data():
             datasets[name] = df
     return datasets
 
-def data_modele(filename="Data_africa_sector_employed_filtered.csv", folder="processed_data"):
-    datasets = {}
-    path = os.path.abspath(folder)  # chemin absolu vers le dossier
-
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"Dossier introuvable : {path}")
-
-    for file in os.listdir(path):
-        if file == filename and file.endswith(".csv"):
-            full_path = os.path.join(path, file)
-            df = pd.read_csv(full_path)
-            name = file.replace(".csv", "")
-            datasets[name] = df
-            break  # on arrête dès qu'on a trouvé le fichier
-    
-    if not datasets:
-        raise FileNotFoundError(f"Fichier {filename} introuvable dans {path}")
-    
-    return datasets
+def data_modele():
+    path = "processed_data/Data_africa_sector_employed_filtered.csv"
+    df = pd.read_csv(path)
+    return df
 
 # ---------- Streamlit App ----------
 st.set_page_config(page_title="Emploi des jeunes dans l'UEMOA", layout="wide")
@@ -174,7 +159,7 @@ if analyse == "📊 Analyses":
 if analyse == "📝 Performances":
     base_modele = data_modele()
 
-    base_modele = pd.DataFrame(base_modele)
+    #base_modele = pd.DataFrame(base_modele)
 
     # ⏱️ Entraînement
     model_pipeline, df_modele, coefficients, metrics = train_model(base_modele)
