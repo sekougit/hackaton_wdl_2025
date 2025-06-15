@@ -174,6 +174,8 @@ if analyse == "📊 Analyses":
 if analyse == "📝 Performances":
     base_modele = data_modele()
 
+    base_modele = pd.DataFrame(base_modele)
+
     # ⏱️ Entraînement
     model_pipeline, df_modele, coefficients, metrics = train_model(base_modele)
 
