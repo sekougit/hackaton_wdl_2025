@@ -64,38 +64,61 @@ if analyse == "🏠 Accueil":
 	st.write(filtered_data.describe(include='all'))
      
 if analyse == "📊 Analyses":
+    # --- Sélections utilisateurs ---
     col1, col2, col3 = st.columns(3)
 
     with col1:
         available_countries = df['country'].dropna().unique().tolist()
-        country_analyses = st.selectbox("Pays", available_countries, key="repartition_pays")
+        country_1 = st.selectbox("Pays 1", available_countries, key="repartition_pays_1")
 
     with col2:
+        country_2 = st.selectbox("Pays 2", available_countries, key="repartition_pays_2")
+
+    with col3:
         years = sorted(df['year'].dropna().unique().tolist())
         selected_year = st.selectbox("Année", years, key="repartition_year")
 
-    with col3:
-        possible_hues = ['gender', 'urban', 'education', 'sector']
-        hue_col = st.selectbox("Couleur (hue)", [h for h in possible_hues if h in df.columns],key="repartition_hue")
-    
-        # ---------- Filtrage des données ----------
-    df_filtered = df[(df['country'] == country_analyses) & (df['year'] == selected_year)]
+    hue_options = ['gender', 'urban', 'education', 'sector']
+    available_hues = [h for h in hue_options if h in df.columns]
+    hue_col = st.selectbox("Variable de couleur (hue)", available_hues, key="repartition_hue")
 
-    st.subheader(f"📈 Répartition du statut d’emploi ({country_analyses}, {selected_year}) selon : {hue_col}")
+    # --- Filtrage ---
+    df_1 = df[(df['country'] == country_1) & (df['year'] == selected_year)]
+    df_2 = df[(df['country'] == country_2) & (df['year'] == selected_year)]
 
-    if df_filtered.empty:
-        st.warning("Aucune donnée disponible pour cette sélection.")
-    else:
-        # Création du graphique avec seaborn
-        fig, ax = plt.subplots(figsize=(10, 6))
-        sns.countplot(data=df_filtered, x='status', hue=hue_col, ax=ax)
-        ax.set_title(f"{selected_country} - {selected_year}")
-        ax.set_xlabel("Statut d'emploi")
-        ax.set_ylabel("Effectif")
-        ax.tick_params(axis='x', rotation=45)
-        plt.tight_layout()
+    st.subheader(f"📊 Comparaison de la répartition du statut d’emploi ({selected_year})")
 
-        st.pyplot(fig)
+    col_a, col_b = st.columns(2)
+
+    # --- Graphique Pays 1 ---
+    with col_a:
+        st.markdown(f"### {country_1}")
+        if df_1.empty:
+            st.warning(f"Aucune donnée pour {country_1} en {selected_year}")
+        else:
+            fig1, ax1 = plt.subplots(figsize=(6, 4))
+            sns.countplot(data=df_1, x='status', hue=hue_col, ax=ax1)
+            ax1.set_title(f"{country_1} - {selected_year}")
+            ax1.set_xlabel("Statut d'emploi")
+            ax1.set_ylabel("Effectif")
+            ax1.tick_params(axis='x', rotation=45)
+            plt.tight_layout()
+            st.pyplot(fig1)
+
+    # --- Graphique Pays 2 ---
+    with col_b:
+        st.markdown(f"### {country_2}")
+        if df_2.empty:
+            st.warning(f"Aucune donnée pour {country_2} en {selected_year}")
+        else:
+            fig2, ax2 = plt.subplots(figsize=(6, 4))
+            sns.countplot(data=df_2, x='status', hue=hue_col, ax=ax2)
+            ax2.set_title(f"{country_2} - {selected_year}")
+            ax2.set_xlabel("Statut d'emploi")
+            ax2.set_ylabel("Effectif")
+            ax2.tick_params(axis='x', rotation=45)
+            plt.tight_layout()
+            st.pyplot(fig2)
     
     col4, col5 = st.columns(2)
 
