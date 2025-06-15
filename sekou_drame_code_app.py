@@ -19,11 +19,12 @@ def load_data():
     return datasets
 
 def data_modele():
-        path = "processed_data/"
-        filename = "Data_africa_sector_employed.csv"
-        full_path = os.path.join(path, filename)
-        df = pd.read_csv(full_path)
-        return df
+    full_path = "processed_data/Data_africa_sector_employed_filtered.csv"  # adapte ici
+    import os
+    if not os.path.exists(full_path):
+        raise FileNotFoundError(f"Fichier introuvable : {full_path}")
+    df = pd.read_csv(full_path)
+    return df
 
 # ---------- Streamlit App ----------
 st.set_page_config(page_title="Emploi des jeunes dans l'UEMOA", layout="wide")
