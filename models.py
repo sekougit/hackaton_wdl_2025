@@ -7,7 +7,6 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 def train_model(df_modele):
-
     # Sélection des variables
     X = df_modele[['year', 'sector', 'gender', 'age', 'country']].copy()
     y = df_modele['population']
@@ -43,9 +42,13 @@ def train_model(df_modele):
     y_pred = model_pipeline.predict(X)
     df_modele['predicted_population'] = y_pred
 
+    # Récupérer le preprocessor déjà fit
+    fitted_preprocessor = model_pipeline.named_steps['preprocessor']
+
     # Récupération des noms de variables transformées
-    ohe_cols = preprocessor.named_transformers_['cat'].get_feature_names_out(cat_cols)
-    spline_cols = [f"spline_{i}" for i in range(preprocessor.named_transformers_['spline'].n_output_features_)]
+    ohe_cols = fitted_preprocessor.named_transformers_['cat'].get_feature_names_out(cat_cols)
+    spline = fitted_preprocessor.named_transformers_['spline']
+    spline_cols = [f"spline_{i}" for i in range(spline.n_output_features_)]
     final_input_features = list(ohe_cols) + spline_cols + num_cols
 
     # Noms des variables après interaction
