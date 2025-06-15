@@ -62,7 +62,7 @@ if analyse == "📊 Analyses":
 
     with col1:
         available_countries = df['country'].dropna().unique().tolist()
-        selected_country = st.selectbox("Pays", available_countries)
+        country_analyses = st.selectbox("Pays", available_countries)
 
     with col2:
         years = sorted(df['year'].dropna().unique().tolist())
@@ -73,9 +73,9 @@ if analyse == "📊 Analyses":
         hue_col = st.selectbox("Couleur (hue)", [h for h in possible_hues if h in df.columns])
     
         # ---------- Filtrage des données ----------
-    df_filtered = df[(df['country'] == selected_country) & (df['year'] == selected_year)]
+    df_filtered = df[(df['country'] == country_analyses) & (df['year'] == selected_year)]
 
-    st.subheader(f"📈 Répartition du statut d’emploi ({selected_country}, {selected_year}) selon : {hue_col}")
+    st.subheader(f"📈 Répartition du statut d’emploi ({country_analyses}, {selected_year}) selon : {hue_col}")
 
     if df_filtered.empty:
         st.warning("Aucune donnée disponible pour cette sélection.")
