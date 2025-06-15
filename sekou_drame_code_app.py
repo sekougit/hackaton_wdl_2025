@@ -46,7 +46,7 @@ filtered_data = df[
 ]
 
 
-if analyse == "Accueil":
+if analyse == "🏠 Accueil":
 	# --------- Affichage des données filtrées ----------
 	st.subheader("📁 Aperçu des données filtrées")
 	st.dataframe(filtered_data.head(100))
