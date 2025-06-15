@@ -62,15 +62,15 @@ if analyse == "📊 Analyses":
 
     with col1:
         available_countries = df['country'].dropna().unique().tolist()
-        country_analyses = st.selectbox("Pays", available_countries)
+        country_analyses = st.selectbox("Pays", available_countries, key="repartition_pays")
 
     with col2:
         years = sorted(df['year'].dropna().unique().tolist())
-        selected_year = st.selectbox("Année", years)
+        selected_year = st.selectbox("Année", years, key="repartition_year")
 
     with col3:
         possible_hues = ['gender', 'urban', 'education', 'sector']
-        hue_col = st.selectbox("Couleur (hue)", [h for h in possible_hues if h in df.columns])
+        hue_col = st.selectbox("Couleur (hue)", [h for h in possible_hues if h in df.columns],key="repartition_hue")
     
         # ---------- Filtrage des données ----------
     df_filtered = df[(df['country'] == country_analyses) & (df['year'] == selected_year)]
@@ -95,11 +95,11 @@ if analyse == "📊 Analyses":
 
     with col4:
         available_countries_1 = df['country'].dropna().unique().tolist()
-        country_analyses_1 = st.selectbox("Pays", available_countries)
+        country_analyses_1 = st.selectbox("Pays", available_countries,key="evolution_pays")
 
     with col5:
         categorical_columns = df.select_dtypes(include=['object', 'category']).columns.tolist()
-        status_1 = st.selectbox("variables", categorical_columns)
+        status_1 = st.selectbox("variables", categorical_columns, key="evolution_variable")
 
         # Filtrer les données pour le Sénégal
     df_senegal = df[df['country'] == country_analyses_1]
