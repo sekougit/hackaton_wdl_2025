@@ -1,3 +1,5 @@
+# models.py
+
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
@@ -7,6 +9,12 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 def train_model(df_modele):
+    # Vérification des colonnes requises
+    required_cols = ['year', 'sector', 'gender', 'age', 'country', 'population']
+    for col in required_cols:
+        if col not in df_modele.columns:
+            raise ValueError(f"Colonne manquante dans les données : {col}")
+
     # Sélection des variables
     X = df_modele[['year', 'sector', 'gender', 'age', 'country']].copy()
     y = df_modele['population']
@@ -42,17 +50,28 @@ def train_model(df_modele):
     y_pred = model_pipeline.predict(X)
     df_modele['predicted_population'] = y_pred
 
-    # Récupérer le preprocessor déjà fit
+    # Récupération des noms de variables transformées (robuste)
     fitted_preprocessor = model_pipeline.named_steps['preprocessor']
+    try:
+        ohe_cols = fitted_preprocessor.named_transformers_['cat'].get_feature_names_out(cat_cols)
+    except Exception as e:
+        ohe_cols = []
+        print("Erreur OneHotEncoder :", e)
 
-    # Récupération des noms de variables transformées
-    ohe_cols = fitted_preprocessor.named_transformers_['cat'].get_feature_names_out(cat_cols)
-    spline = fitted_preprocessor.named_transformers_['spline']
-    spline_cols = [f"spline_{i}" for i in range(spline.n_output_features_)]
+    try:
+        spline_transformer = fitted_preprocessor.named_transformers_['spline']
+        spline_cols = [f"spline_{i}" for i in range(spline_transformer.n_output_features_)]
+    except Exception as e:
+        spline_cols = []
+        print("Erreur SplineTransformer :", e)
+
     final_input_features = list(ohe_cols) + spline_cols + num_cols
 
-    # Noms des variables après interaction
-    feature_names = model_pipeline.named_steps['interactions'].get_feature_names_out(final_input_features)
+    try:
+        feature_names = model_pipeline.named_steps['interactions'].get_feature_names_out(final_input_features)
+    except Exception as e:
+        print("Erreur PolynomialFeatures.get_feature_names_out :", e)
+        feature_names = [f"feature_{i}" for i in range(len(model_pipeline.named_steps['regressor'].coef_))]
 
     # Coefficients
     coefficients = pd.DataFrame({
