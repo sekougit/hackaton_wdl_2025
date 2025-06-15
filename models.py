@@ -16,7 +16,7 @@ def train_model(df_modele):
             raise ValueError(f"Colonne manquante dans les données : {col}")
 
     # Sélection des variables
-    X = df_modele[['year', 'sector', 'gender', 'age', 'country']].copy()
+    X = df_modele[['year', 'sector', 'gender', 'country']].copy()
     y = df_modele['population']
 
     # Prétraitement
