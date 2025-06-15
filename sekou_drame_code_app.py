@@ -4,6 +4,7 @@ import plotly.express as px
 import os
 import seaborn as sns
 import matplotlib.pyplot as plt
+from models import train_model
 
 # ---------- Chargement des données traitées ----------
 @st.cache_data
@@ -16,6 +17,13 @@ def load_data():
             df = pd.read_csv(os.path.join(path, file))
             datasets[name] = df
     return datasets
+
+def data_modele():
+        path = "processed_data/"
+        filename = "Data_africa_sector_employed.csv"
+        full_path = os.path.join(path, filename)
+        df = pd.read_csv(full_path)
+        return df
 
 # ---------- Streamlit App ----------
 st.set_page_config(page_title="Emploi des jeunes dans l'UEMOA", layout="wide")
@@ -148,4 +156,34 @@ if analyse == "📊 Analyses":
         ax.tick_params(axis='x', rotation=45)
         ax.set_ylabel("Effectif")
         ax.set_xlabel(f"{var_unique}")
+        st.pyplot(fig)
+
+if analyse == "📝 Performances":
+    base_modele = data_modele()
+
+    # ⏱️ Entraînement
+    model_pipeline, df_modele, coefficients, metrics = train_model(base_modele)
+
+    # Tabs
+    tab1, tab2, tab3 = st.tabs(["📊 Performances", "📌 Coefficients", "📈 Prévisions"])
+
+    with tab1:
+        st.subheader("📊 Performances du modèle")
+        st.metric("R²", f"{metrics['r2']:.3f}")
+        st.metric("MAE", f"{metrics['mae']:,.0f}")
+        st.metric("RMSE", f"{metrics['rmse']:,.0f}")
+
+    with tab2:
+        st.subheader("📌 Coefficients")
+        st.dataframe(coefficients, use_container_width=True)
+
+    with tab3:
+        st.subheader("📈 Prévisions")
+        secteur = st.selectbox("Choisir un secteur", df_modele['sector'].unique())
+        df_plot = df_modele[df_modele['sector'] == secteur]
+
+        fig, ax = plt.subplots(figsize=(10, 6))
+        sns.lineplot(data=df_plot, x='year', y='population', hue='gender', linestyle='--', ax=ax, label='Observé')
+        sns.lineplot(data=df_plot, x='year', y='predicted_population', hue='gender', linestyle='-', ax=ax, label='Prévu')
+        ax.set_title(f"Prévision vs Réalité – {secteur}")
         st.pyplot(fig)
