@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import os
+import seaborn as sns
+import matplotlib as plt
 
 # ---------- Chargement des données traitées ----------
 @st.cache_data
@@ -54,3 +56,37 @@ if analyse == "🏠 Accueil":
 	# --------- Statistiques descriptives ----------
 	st.subheader("📋 Statistiques descriptives")
 	st.write(filtered_data.describe(include='all'))
+     
+if analyse == "📊 Analyses":
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        available_countries = df['country'].dropna().unique().tolist()
+        selected_country = st.selectbox("Pays", available_countries)
+
+    with col2:
+        years = sorted(df['year'].dropna().unique().tolist())
+        selected_year = st.selectbox("Année", years)
+
+    with col3:
+        possible_hues = ['gender', 'urban', 'education', 'sector']
+        hue_col = st.selectbox("Couleur (hue)", [h for h in possible_hues if h in df.columns])
+    
+        # ---------- Filtrage des données ----------
+    df_filtered = df[(df['country'] == selected_country) & (df['year'] == selected_year)]
+
+    st.subheader(f"📈 Répartition du statut d’emploi ({selected_country}, {selected_year}) selon : {hue_col}")
+
+    if df_filtered.empty:
+        st.warning("Aucune donnée disponible pour cette sélection.")
+    else:
+        # Création du graphique avec seaborn
+        fig, ax = plt.subplots(figsize=(10, 6))
+        sns.countplot(data=df_filtered, x='status', hue=hue_col, ax=ax)
+        ax.set_title(f"{selected_country} - {selected_year}")
+        ax.set_xlabel("Statut d'emploi")
+        ax.set_ylabel("Effectif")
+        ax.tick_params(axis='x', rotation=45)
+        plt.tight_layout()
+
+        st.pyplot(fig)
