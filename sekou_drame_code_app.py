@@ -123,33 +123,54 @@ if analyse == "📊 Analyses":
     col4, col5 = st.columns(2)
 
     with col4:
-        available_countries_1 = df['country'].dropna().unique().tolist()
-        country_analyses_1 = st.selectbox("Pays", available_countries,key="evolution_pays")
+        available_countries = df['country'].dropna().unique().tolist()
+        country_1 = st.selectbox("Pays 1", available_countries, key="evolution_pays_1")
 
     with col5:
-        categorical_columns = df.select_dtypes(include=['object', 'category']).columns.tolist()
-        status_1 = st.selectbox("variables", categorical_columns, key="evolution_variable")
+        country_2 = st.selectbox("Pays 2", available_countries, key="evolution_pays_2")
 
-        # Filtrer les données pour le Sénégal
-    df_senegal = df[df['country'] == country_analyses_1]
+    # Sélection de la variable catégorielle (à regrouper)
+    categorical_columns = df.select_dtypes(include=['object', 'category']).columns.tolist()
+    categorical_columns = [col for col in categorical_columns if col not in ['country', 'year', 'population']]  # éviter doublons inutiles
+    status_var = st.selectbox("Variable de regroupement", categorical_columns, key="evolution_variable")
 
-    # Vérifier si la colonne 'population' existe
-    if 'population' not in df_senegal.columns:
-        st.error("La colonne 'population' est manquante dans les données sélectionnées.")
-    else:
-        # Grouper par année et statut pour obtenir la population totale
-        df_grouped = df_senegal.groupby(['year', status_1])['population'].sum().reset_index()
+    col_a, col_b = st.columns(2)
 
-        # Tracer la courbe
-        fig, ax = plt.subplots(figsize=(12, 6))
-        sns.lineplot(data=df_grouped, x='year', y='population', hue=status_1, marker='o', ax=ax)
-        ax.set_title(f"Évolution de la population par statut d’emploi par {status_1} ({country_analyses_1}, 2015–2030)")
-        ax.set_xlabel("Année")
-        ax.set_ylabel("Population")
-        ax.grid(True)
-        plt.tight_layout()
+    # --- Courbe pour le pays 1 ---
+    with col_a:
+        df_1 = df[df['country'] == country_1]
 
-        st.pyplot(fig)
+        st.markdown(f"### {country_1}")
+        if 'population' not in df_1.columns or df_1.empty:
+            st.warning("Aucune donnée ou colonne 'population' manquante.")
+        else:
+            df_grouped_1 = df_1.groupby(['year', status_var])['population'].sum().reset_index()
+
+            fig1, ax1 = plt.subplots(figsize=(8, 5))
+            sns.lineplot(data=df_grouped_1, x='year', y='population', hue=status_var, marker='o', ax=ax1)
+            ax1.set_title(f"{country_1} - Évolution par {status_var}")
+            ax1.set_xlabel("Année")
+            ax1.set_ylabel("Population")
+            ax1.grid(True)
+            st.pyplot(fig1)
+
+    # --- Courbe pour le pays 2 ---
+    with col_b:
+        df_2 = df[df['country'] == country_2]
+
+        st.markdown(f"### {country_2}")
+        if 'population' not in df_2.columns or df_2.empty:
+            st.warning("Aucune donnée ou colonne 'population' manquante.")
+        else:
+            df_grouped_2 = df_2.groupby(['year', status_var])['population'].sum().reset_index()
+
+            fig2, ax2 = plt.subplots(figsize=(8, 5))
+            sns.lineplot(data=df_grouped_2, x='year', y='population', hue=status_var, marker='o', ax=ax2)
+            ax2.set_title(f"{country_2} - Évolution par {status_var}")
+            ax2.set_xlabel("Année")
+            ax2.set_ylabel("Population")
+            ax2.grid(True)
+            st.pyplot(fig2)
 
         # Sélection interactive du pays et de l’année
     col1, col2, col3 = st.columns(3)
