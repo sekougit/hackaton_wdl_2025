@@ -45,7 +45,7 @@ with st.sidebar.expander("🎛️ Filtres"):
 
 # --------- Application des filtres ----------
 filtered_df = df[
-    df['country'].isin(country) &
+    df['country'] == country &
     df['year'].between(year[0], year[1])
 ]
 
