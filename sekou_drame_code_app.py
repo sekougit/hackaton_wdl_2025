@@ -91,13 +91,13 @@ if analyse == "📊 Analyses":
 
         st.pyplot(fig)
     
-    col1, col2 = st.columns(2)
+    col4, col5 = st.columns(2)
 
-    with col1:
+    with col4:
         available_countries = df['country'].dropna().unique().tolist()
         country_analyses_1 = st.selectbox("Pays", available_countries)
 
-    with col2:
+    with col5:
         categorical_columns = df.select_dtypes(include=['object', 'category']).columns.tolist()
         status_1 = st.selectbox("variables", categorical_columns)
 
