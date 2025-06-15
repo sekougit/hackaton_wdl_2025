@@ -30,31 +30,35 @@ st.markdown("Cette application permet d'explorer les données d'emploi, d'éduca
 
 data = load_data()
 
-# --------- Sélection des données à explorer ----------
+# Sélection de la base de données
 section = st.sidebar.selectbox("🔍 Choisir une base de données :", list(data.keys()))
 
-analyse = st.radio("Analyses & modélisation", ["🏠 Analyses", "📊 Modeles", "📝 Performances"])
+# Sélection de l'analyse
+analyse = st.radio("Analyses & modélisation", ["🏠 Analyses", "📊 Modèles", "📝 Performances"])
 
+# Chargement et filtrage de la base sélectionnée
 df = data[section]
+
+# Appliquer le filtre jeunes
 df = filter_youth(df)
 
 # --------- Filtres dynamiques ----------
 with st.sidebar.expander("🎛️ Filtres"):
-    country = st.multiselect("Pays :", df['country'].dropna().unique(), default=df['country'].dropna().unique())
-    year = st.slider("Année :", int(df['year'].min()), int(df['year'].max()), (int(df['year'].min()), int(df['year'].max())))
-    
 
+    # Sélection des pays
+    all_countries = df['country'].dropna().unique()
+    country = st.multiselect("Pays :", options=sorted(all_countries), default=sorted(all_countries))
+
+    # Sélection de l'année (intervalle)
+    min_year = int(df['year'].min())
+    max_year = int(df['year'].max())
+    year = st.slider("Année :", min_value=min_year, max_value=max_year, value=(min_year, max_year))
 
 # --------- Application des filtres ----------
-filtered_df = df[
+df_filtered = df[
     df['country'].isin(country) &
     df['year'].between(year[0], year[1])
 ]
-if sex:
-    filtered_df = filtered_df[filtered_df['sex'].isin(sex)]
-
-st.subheader("📁 Aperçu des données filtrées")
-st.dataframe(filtered_df.head(100))
 
 # --------- Visualisations ----------
 st.subheader("📈 Visualisations")
