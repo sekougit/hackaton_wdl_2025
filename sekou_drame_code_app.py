@@ -7,15 +7,13 @@ import os
 @st.cache_data
 def load_data():
     path = "processed_data/"
-    data = {}
+    datasets = {}
     for file in os.listdir(path):
         if file.endswith(".csv"):
             name = file.replace(".csv", "")
-            data = pd.read_csv(os.path.join(path, file))
-            data[name] = data
-    return data
-
-
+            df = pd.read_csv(os.path.join(path, file))
+            datasets[name] = df
+    return datasets
 
 # ---------- Streamlit App ----------
 st.set_page_config(page_title="Emploi des jeunes dans l'UEMOA", layout="wide")
@@ -23,32 +21,34 @@ st.set_page_config(page_title="Emploi des jeunes dans l'UEMOA", layout="wide")
 st.title("📊 Analyse de l'emploi des jeunes (15–35 ans) dans l'UEMOA")
 st.markdown("Cette application permet d'explorer les données d'emploi, d'éducation et de secteur d'activité pour les jeunes dans les pays de l'UEMOA.")
 
-data = load_data()
+datasets = load_data()
 
 # --------- Sélection des données à explorer ----------
-section = st.sidebar.selectbox("🔍 Choisir une base de données :", list(data.keys()))
+section = st.sidebar.selectbox("🔍 Choisir une base de données :", list(datasets.keys()))
 
-data = data[section]
+df = datasets[section]
 
-country = st.sidebar.selectbox("Pays :", data['country'].dropna().unique(), default=data['country'].dropna().unique())
-    
-year = st.sidebar.slider("Année :", int(data['year'].min()), int(data['year'].max()), (int(data['year'].min()), int(data['year'].max())))
+# Filtres dynamiques
+with st.sidebar.expander("🎛️ Filtres"):
+    countries = df['country'].dropna().unique().tolist()
+    selected_country = st.selectbox("Pays :", countries)
 
-analyse = st.sidebar.radio("Analyses & modélisation", ["🏠 Analyses", "📊 Modeles", "📝 Performances"])
+    min_year = int(df['year'].min())
+    max_year = int(df['year'].max())
+    year_range = st.slider("Année :", min_value=min_year, max_value=max_year, value=(min_year, max_year))
+
+analyse = st.sidebar.radio("Analyses & modélisation", ["🏠 Analyses", "📊 Modèles", "📝 Performances"])
 
 # --------- Application des filtres ----------
-data = data[
-    data['country'] == country &
-    data['year'].between(year[0], year[1])
+filtered_data = df[
+    (df['country'] == selected_country) &
+    (df['year'].between(year_range[0], year_range[1]))
 ]
 
-
-
+# --------- Affichage des données filtrées ----------
 st.subheader("📁 Aperçu des données filtrées")
-st.dataframe(data.head(100))
-
+st.dataframe(filtered_data.head(100))
 
 # --------- Statistiques descriptives ----------
 st.subheader("📋 Statistiques descriptives")
-st.write(data.describe(include='all'))
-
+st.write(filtered_data.describe(include='all'))
