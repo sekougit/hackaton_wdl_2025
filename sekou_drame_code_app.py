@@ -33,6 +33,8 @@ data = load_data()
 # --------- Sélection des données à explorer ----------
 section = st.sidebar.selectbox("🔍 Choisir une base de données :", list(data.keys()))
 
+analyse = st.radio("Analyses & modélisation", ["🏠 Analyses", "📊 Modeles", "📝 Performances"])
+
 df = data[section]
 df = filter_youth(df)
 
@@ -41,7 +43,7 @@ with st.sidebar.expander("🎛️ Filtres"):
     country = st.multiselect("Pays :", df['country'].dropna().unique(), default=df['country'].dropna().unique())
     year = st.slider("Année :", int(df['year'].min()), int(df['year'].max()), (int(df['year'].min()), int(df['year'].max())))
     
-analyse = st.radio("Analyses & modélisation", ["🏠 Analyses", "📊 Modeles", "📝 Performances"])
+
 
 # --------- Application des filtres ----------
 filtered_df = df[
