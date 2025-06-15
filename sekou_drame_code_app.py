@@ -37,7 +37,7 @@ with st.sidebar.expander("🎛️ Filtres"):
     max_year = int(df['year'].max())
     year_range = st.slider("Année :", min_value=min_year, max_value=max_year, value=(min_year, max_year))
 
-analyse = st.sidebar.radio("Analyses & modélisation", ["🏠 Analyses", "📊 Modèles", "📝 Performances"])
+analyse = st.sidebar.radio("Analyses & modélisation", ["🏠 Accueil", "📊 Analyses", "📝 Performances"])
 
 # --------- Application des filtres ----------
 filtered_data = df[
@@ -45,10 +45,12 @@ filtered_data = df[
     (df['year'].between(year_range[0], year_range[1]))
 ]
 
-# --------- Affichage des données filtrées ----------
-st.subheader("📁 Aperçu des données filtrées")
-st.dataframe(filtered_data.head(100))
 
-# --------- Statistiques descriptives ----------
-st.subheader("📋 Statistiques descriptives")
-st.write(filtered_data.describe(include='all'))
+if analyse == "Accueil"
+	# --------- Affichage des données filtrées ----------
+	st.subheader("📁 Aperçu des données filtrées")
+	st.dataframe(filtered_data.head(100))
+
+	# --------- Statistiques descriptives ----------
+	st.subheader("📋 Statistiques descriptives")
+	st.write(filtered_data.describe(include='all'))
