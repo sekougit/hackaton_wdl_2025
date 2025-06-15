@@ -19,7 +19,7 @@ def load_data():
     return datasets
 
 def data_modele():
-    path = "processed_data/Data_africa_sector_employed_filtered.csv"
+    path = "processed_data/Data_africa_sector_employed_imputed.csv"
     df = pd.read_csv(path)
     return df
 
