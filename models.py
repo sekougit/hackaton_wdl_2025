@@ -1,0 +1,69 @@
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import OneHotEncoder, SplineTransformer, PolynomialFeatures
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+
+def train_model(df_modele):
+    # Filtrer jeunes en emploi
+    df = df[(df['age'] >= 15) & (df['age'] <= 35) & (df['status'] == 'employed')].copy()
+
+    # Sélection des variables
+    X = df[['year', 'sector', 'gender', 'age', 'country']].copy()
+    y = df['population']
+
+    # Prétraitement
+    X['sector'] = X['sector'].astype(str)
+    X['gender'] = X['gender'].astype(str)
+    X['country'] = X['country'].astype(str)
+    X['year'] = X['year'].astype(float)
+    X['year_centered'] = X['year'] - X['year'].min()
+
+    # Colonnes catégorielles et numériques
+    cat_cols = ['sector', 'gender', 'country']
+    num_cols = ['age']
+    spline_col = ['year_centered']
+
+    # Pipeline de prétraitement
+    preprocessor = ColumnTransformer([
+        ('cat', OneHotEncoder(drop='first'), cat_cols),
+        ('spline', SplineTransformer(degree=3, n_knots=5), spline_col),
+        ('num', 'passthrough', num_cols)
+    ])
+
+    # Pipeline complet avec interactions
+    model_pipeline = Pipeline([
+        ('preprocessor', preprocessor),
+        ('interactions', PolynomialFeatures(degree=2, interaction_only=True, include_bias=False)),
+        ('regressor', LinearRegression())
+    ])
+
+    # Entraînement
+    model_pipeline.fit(X, y)
+    y_pred = model_pipeline.predict(X)
+    df['predicted_population'] = y_pred
+
+    # Récupération des noms de variables transformées
+    ohe_cols = preprocessor.named_transformers_['cat'].get_feature_names_out(cat_cols)
+    spline_cols = [f"spline_{i}" for i in range(preprocessor.named_transformers_['spline'].n_output_features_)]
+    final_input_features = list(ohe_cols) + spline_cols + num_cols
+
+    # Noms des variables après interaction
+    feature_names = model_pipeline.named_steps['interactions'].get_feature_names_out(final_input_features)
+
+    # Coefficients
+    coefficients = pd.DataFrame({
+        'Feature': feature_names,
+        'Coefficient': model_pipeline.named_steps['regressor'].coef_
+    }).sort_values(by='Coefficient', key=abs, ascending=False)
+
+    # Performances
+    metrics = {
+        'r2': model_pipeline.score(X, y),
+        'mae': mean_absolute_error(y, y_pred),
+        'rmse': np.sqrt(mean_squared_error(y, y_pred))
+    }
+
+    return model_pipeline, df_modele, coefficients, metrics
