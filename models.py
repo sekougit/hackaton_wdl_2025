@@ -8,11 +8,11 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 def train_model(df_modele):
     # Filtrer jeunes en emploi
-    df = df[(df['age'] >= 15) & (df['age'] <= 35) & (df['status'] == 'employed')].copy()
+    df_modele = df_modele[(df_modele['age'] >= 15) & (df_modele['age'] <= 35) & (df_modele['status'] == 'employed')].copy()
 
     # Sélection des variables
-    X = df[['year', 'sector', 'gender', 'age', 'country']].copy()
-    y = df['population']
+    X = df_modele[['year', 'sector', 'gender', 'age', 'country']].copy()
+    y = df_modele['population']
 
     # Prétraitement
     X['sector'] = X['sector'].astype(str)
@@ -43,7 +43,7 @@ def train_model(df_modele):
     # Entraînement
     model_pipeline.fit(X, y)
     y_pred = model_pipeline.predict(X)
-    df['predicted_population'] = y_pred
+    df_modele['predicted_population'] = y_pred
 
     # Récupération des noms de variables transformées
     ohe_cols = preprocessor.named_transformers_['cat'].get_feature_names_out(cat_cols)
