@@ -15,12 +15,7 @@ def load_data():
             data[name] = df
     return data
 
-# ---------- Filtrage des jeunes ----------
-def filter_youth(df, age_col='age'):
-    if age_col in df.columns:
-        return df[(df[age_col] >= 15) & (df[age_col] <= 35)].copy()
-    else:
-        return df
+
 
 # ---------- Streamlit App ----------
 st.set_page_config(page_title="Emploi des jeunes dans l'UEMOA", layout="wide")
@@ -33,29 +28,27 @@ data = load_data()
 # --------- Sélection des données à explorer ----------
 section = st.sidebar.selectbox("🔍 Choisir une base de données :", list(data.keys()))
 
-df = data[section]
-df = filter_youth(df)
+data = data[section]
 
-# --------- Filtres dynamiques ----------
-with st.sidebar.expander("🎛️ Filtres"):
-    country = st.sidebar.selectbox("Pays :", df['country'].dropna().unique(), default=df['country'].dropna().unique())
-    year = st.sidebar.slider("Année :", int(df['year'].min()), int(df['year'].max()), (int(df['year'].min()), int(df['year'].max())))
+country = st.sidebar.selectbox("Pays :", df['country'].dropna().unique(), default=df['country'].dropna().unique())
+    
+year = st.sidebar.slider("Année :", int(df['year'].min()), int(df['year'].max()), (int(df['year'].min()), int(df['year'].max())))
 
-    analyse = st.sidebar.radio("Analyses & modélisation", ["🏠 Analyses", "📊 Modeles", "📝 Performances"])
+analyse = st.sidebar.radio("Analyses & modélisation", ["🏠 Analyses", "📊 Modeles", "📝 Performances"])
 
 # --------- Application des filtres ----------
-filtered_df = df[
-    df['country'] == country &
-    df['year'].between(year[0], year[1])
+data = data[
+    data['country'] == country &
+    data['year'].between(year[0], year[1])
 ]
 
 
 
 st.subheader("📁 Aperçu des données filtrées")
-st.dataframe(filtered_df.head(100))
+st.dataframe(data.head(100))
 
 
 # --------- Statistiques descriptives ----------
 st.subheader("📋 Statistiques descriptives")
-st.write(filtered_df.describe(include='all'))
+st.write(data.describe(include='all'))
 
