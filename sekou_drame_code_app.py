@@ -40,10 +40,7 @@ df = filter_youth(df)
 with st.sidebar.expander("🎛️ Filtres"):
     country = st.multiselect("Pays :", df['country'].dropna().unique(), default=df['country'].dropna().unique())
     year = st.slider("Année :", int(df['year'].min()), int(df['year'].max()), (int(df['year'].min()), int(df['year'].max())))
-    if 'sex' in df.columns:
-        sex = st.multiselect("Sexe :", df['sex'].dropna().unique(), default=df['sex'].dropna().unique())
-    else:
-        sex = []
+    analyse = st.radio("Analyses & modélisation", ["🏠 Analyses", "📊 Modeles", "📝 Performances"])
 
 # --------- Application des filtres ----------
 filtered_df = df[
