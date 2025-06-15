@@ -53,6 +53,8 @@ filtered_df = df[
 if sex:
     filtered_df = filtered_df[filtered_df['sex'].isin(sex)]
 
+analyse = st.radio("Analyses & modélisation", ["🏠 Analyses", "📊 Modeles", "📝 Performances"])
+
 st.subheader("📁 Aperçu des données filtrées")
 st.dataframe(filtered_df.head(100))
 
