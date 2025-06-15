@@ -90,3 +90,35 @@ if analyse == "📊 Analyses":
         plt.tight_layout()
 
         st.pyplot(fig)
+    
+    col1, col2 = st.columns(2)
+
+    with col1:
+        available_countries = df['country'].dropna().unique().tolist()
+        country_analyses_1 = st.selectbox("Pays", available_countries)
+
+    with col2:
+        categorical_columns = df.select_dtypes(include=['object', 'category']).columns.tolist()
+        status_1 = st.selectbox("variables", categorical_columns)
+
+        # Filtrer les données pour le Sénégal
+    df_senegal = df[df['country'] == country_analyses_1]
+
+    # Vérifier si la colonne 'population' existe
+    if 'population' not in df_senegal.columns:
+        st.error("La colonne 'population' est manquante dans les données sélectionnées.")
+    else:
+        # Grouper par année et statut pour obtenir la population totale
+        df_grouped = df_senegal.groupby(['year', status_1])['population'].sum().reset_index()
+
+        # Tracer la courbe
+        fig, ax = plt.subplots(figsize=(12, 6))
+        sns.lineplot(data=df_grouped, x='year', y='population', hue=status_1, marker='o', ax=ax)
+        ax.set_title(f"Évolution de la population par statut d’emploi par {status_1} ({country_analyses_1}, 2015–2030)")
+        ax.set_xlabel("Année")
+        ax.set_ylabel("Population")
+        ax.grid(True)
+        plt.tight_layout()
+
+        st.pyplot(fig)
+
