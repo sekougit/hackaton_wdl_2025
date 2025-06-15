@@ -122,3 +122,30 @@ if analyse == "📊 Analyses":
 
         st.pyplot(fig)
 
+        # Sélection interactive du pays et de l’année
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        country_selected = st.selectbox("Choisir un pays", df['country'].dropna().unique().tolist())
+
+    with col2:
+        year_selected = st.selectbox("Choisir une année", sorted(df['year'].dropna().unique().tolist()))
+
+    with col3:
+        categorical_columns = df.select_dtypes(include=['object', 'category']).columns.tolist()
+        var_unique = st.selectbox("variables", categorical_columns, key="variable_unique")
+
+    # Filtrer les données
+    df_filtered = df[(df['country'] == country_selected) & (df['year'] == year_selected)]
+
+    if df_filtered.empty:
+        st.warning("Aucune donnée disponible pour ce pays et cette année.")
+    else:
+        # Créer le graphique
+        fig, ax = plt.subplots(figsize=(8, 5))
+        sns.countplot(data=df_filtered, x=var_unique, order=df_filtered[var_unique].value_counts().index, ax=ax)
+        ax.set_title(f"Niveau d'éducation des jeunes - {country_selected} ({year_selected})")
+        ax.tick_params(axis='x', rotation=45)
+        ax.set_ylabel("Effectif")
+        ax.set_xlabel(f"{var_unique}")
+        st.pyplot(fig)
