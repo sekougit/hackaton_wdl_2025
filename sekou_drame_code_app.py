@@ -38,48 +38,22 @@ df = filter_youth(df)
 
 # --------- Filtres dynamiques ----------
 with st.sidebar.expander("🎛️ Filtres"):
-    country = st.multiselect("Pays :", df['country'].dropna().unique(), default=df['country'].dropna().unique())
-    year = st.slider("Année :", int(df['year'].min()), int(df['year'].max()), (int(df['year'].min()), int(df['year'].max())))
-    if 'sex' in df.columns:
-        sex = st.multiselect("Sexe :", df['sex'].dropna().unique(), default=df['sex'].dropna().unique())
-    else:
-        sex = []
+    country = st.sidebar.selectbox("Pays :", df['country'].dropna().unique(), default=df['country'].dropna().unique())
+    year = st.sidebar.slider("Année :", int(df['year'].min()), int(df['year'].max()), (int(df['year'].min()), int(df['year'].max())))
+
+    analyse = st.sidebar.radio("Analyses & modélisation", ["🏠 Analyses", "📊 Modeles", "📝 Performances"])
 
 # --------- Application des filtres ----------
 filtered_df = df[
     df['country'].isin(country) &
     df['year'].between(year[0], year[1])
 ]
-if sex:
-    filtered_df = filtered_df[filtered_df['sex'].isin(sex)]
 
-analyse = st.radio("Analyses & modélisation", ["🏠 Analyses", "📊 Modeles", "📝 Performances"])
+
 
 st.subheader("📁 Aperçu des données filtrées")
 st.dataframe(filtered_df.head(100))
 
-# --------- Visualisations ----------
-st.subheader("📈 Visualisations")
-
-col1, col2 = st.columns(2)
-
-with col1:
-    if 'education_level' in filtered_df.columns:
-        edu_fig = px.histogram(filtered_df, x='education_level', color='sex' if 'sex' in filtered_df.columns else None,
-                               title="Niveau d'éducation des jeunes", barmode="group")
-        st.plotly_chart(edu_fig, use_container_width=True)
-
-with col2:
-    if 'employment_status' in filtered_df.columns:
-        emp_fig = px.histogram(filtered_df, x='employment_status', color='sex' if 'sex' in filtered_df.columns else None,
-                               title="Statut d'emploi des jeunes", barmode="group")
-        st.plotly_chart(emp_fig, use_container_width=True)
-
-if 'sector' in filtered_df.columns:
-    st.subheader("📊 Répartition par secteur d'activité")
-    sector_fig = px.histogram(filtered_df, x='sector', color='sex' if 'sex' in filtered_df.columns else None,
-                              title="Jeunes employés par secteur", barmode="group")
-    st.plotly_chart(sector_fig, use_container_width=True)
 
 # --------- Statistiques descriptives ----------
 st.subheader("📋 Statistiques descriptives")
