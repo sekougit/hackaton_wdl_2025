@@ -94,7 +94,7 @@ if analyse == "📊 Analyses":
     col4, col5 = st.columns(2)
 
     with col4:
-        available_countries = df['country'].dropna().unique().tolist()
+        available_countries_1 = df['country'].dropna().unique().tolist()
         country_analyses_1 = st.selectbox("Pays", available_countries)
 
     with col5:
