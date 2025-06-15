@@ -11,8 +11,8 @@ def load_data():
     for file in os.listdir(path):
         if file.endswith(".csv"):
             name = file.replace(".csv", "")
-            df = pd.read_csv(os.path.join(path, file))
-            data[name] = df
+            data = pd.read_csv(os.path.join(path, file))
+            data[name] = data
     return data
 
 
@@ -30,9 +30,9 @@ section = st.sidebar.selectbox("🔍 Choisir une base de données :", list(data.
 
 data = data[section]
 
-country = st.sidebar.selectbox("Pays :", df['country'].dropna().unique(), default=df['country'].dropna().unique())
+country = st.sidebar.selectbox("Pays :", data['country'].dropna().unique(), default=data['country'].dropna().unique())
     
-year = st.sidebar.slider("Année :", int(df['year'].min()), int(df['year'].max()), (int(df['year'].min()), int(df['year'].max())))
+year = st.sidebar.slider("Année :", int(data['year'].min()), int(data['year'].max()), (int(data['year'].min()), int(data['year'].max())))
 
 analyse = st.sidebar.radio("Analyses & modélisation", ["🏠 Analyses", "📊 Modeles", "📝 Performances"])
 
