@@ -65,7 +65,7 @@ if analyse == "🏠 Accueil":
      
 if analyse == "📊 Analyses":
     # --- Sélections utilisateurs ---
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
 
     with col1:
         available_countries = df['country'].dropna().unique().tolist()
@@ -78,9 +78,10 @@ if analyse == "📊 Analyses":
         years = sorted(df['year'].dropna().unique().tolist())
         selected_year = st.selectbox("Année", years, key="repartition_year")
 
-    hue_options = ['gender', 'urban', 'education', 'sector']
-    available_hues = [h for h in hue_options if h in df.columns]
-    hue_col = st.selectbox("Variable de couleur (hue)", available_hues, key="repartition_hue")
+    with col4:
+        hue_options = ['gender', 'urban', 'education', 'sector']
+        available_hues = [h for h in hue_options if h in df.columns]
+        hue_col = st.selectbox("Variable de couleur (hue)", available_hues, key="repartition_hue")
 
     # --- Filtrage ---
     df_1 = df[(df['country'] == country_1) & (df['year'] == selected_year)]
@@ -120,7 +121,7 @@ if analyse == "📊 Analyses":
             plt.tight_layout()
             st.pyplot(fig2)
     
-    col4, col5 = st.columns(2)
+    col4, col5, col3 = st.columns(3)
 
     with col4:
         available_countries = df['country'].dropna().unique().tolist()
@@ -129,10 +130,11 @@ if analyse == "📊 Analyses":
     with col5:
         country_2 = st.selectbox("Pays 2", available_countries, key="evolution_pays_2")
 
-    # Sélection de la variable catégorielle (à regrouper)
-    categorical_columns = df.select_dtypes(include=['object', 'category']).columns.tolist()
-    categorical_columns = [col for col in categorical_columns if col not in ['country', 'year', 'population']]  # éviter doublons inutiles
-    status_var = st.selectbox("Variable de regroupement", categorical_columns, key="evolution_variable")
+    with col3:
+        # Sélection de la variable catégorielle (à regrouper)
+        categorical_columns = df.select_dtypes(include=['object', 'category']).columns.tolist()
+        categorical_columns = [col for col in categorical_columns if col not in ['country', 'year', 'population']]  # éviter doublons inutiles
+        status_var = st.selectbox("Variable de regroupement", categorical_columns, key="evolution_variable")
 
     col_a, col_b = st.columns(2)
 
@@ -172,33 +174,58 @@ if analyse == "📊 Analyses":
             ax2.grid(True)
             st.pyplot(fig2)
 
-        # Sélection interactive du pays et de l’année
-    col1, col2, col3 = st.columns(3)
+    # Sélection interactive des deux pays, de l’année et de la variable catégorielle
+    col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        country_selected = st.selectbox("Choisir un pays", df['country'].dropna().unique().tolist())
+        country_1 = st.selectbox("Pays 1", df['country'].dropna().unique().tolist(), key="pays1_var_unique")
 
     with col2:
-        year_selected = st.selectbox("Choisir une année", sorted(df['year'].dropna().unique().tolist()))
+        country_2 = st.selectbox("Pays 2", df['country'].dropna().unique().tolist(), key="pays2_var_unique")
 
     with col3:
+        year_selected = st.selectbox("Année", sorted(df['year'].dropna().unique().tolist()), key="annee_var_unique")
+
+    with col4:
+        # Choix de la variable à analyser
         categorical_columns = df.select_dtypes(include=['object', 'category']).columns.tolist()
-        var_unique = st.selectbox("variables", categorical_columns, key="variable_unique")
+        categorical_columns = [col for col in categorical_columns if col not in ['country', 'year']]  # on exclut ces deux colonnes
+        var_unique = st.selectbox("Variable catégorielle à analyser", categorical_columns, key="variable_unique_comparaison")
 
-    # Filtrer les données
-    df_filtered = df[(df['country'] == country_selected) & (df['year'] == year_selected)]
+    # Création des deux colonnes pour afficher les figures côte à côte
+    col_left, col_right = st.columns(2)
 
-    if df_filtered.empty:
-        st.warning("Aucune donnée disponible pour ce pays et cette année.")
-    else:
-        # Créer le graphique
-        fig, ax = plt.subplots(figsize=(8, 5))
-        sns.countplot(data=df_filtered, x=var_unique, order=df_filtered[var_unique].value_counts().index, ax=ax)
-        ax.set_title(f"Niveau d'éducation des jeunes - {country_selected} ({year_selected})")
-        ax.tick_params(axis='x', rotation=45)
-        ax.set_ylabel("Effectif")
-        ax.set_xlabel(f"{var_unique}")
-        st.pyplot(fig)
+    # --- Figure pour le premier pays ---
+    with col_left:
+        df_1 = df[(df['country'] == country_1) & (df['year'] == year_selected)]
+
+        st.markdown(f"### {country_1} ({year_selected})")
+        if df_1.empty:
+            st.warning(f"Aucune donnée disponible pour {country_1} en {year_selected}.")
+        else:
+            fig1, ax1 = plt.subplots(figsize=(6, 4))
+            sns.countplot(data=df_1, x=var_unique, order=df_1[var_unique].value_counts().index, ax=ax1)
+            ax1.set_title(f"{country_1}")
+            ax1.set_xlabel(var_unique)
+            ax1.set_ylabel("Effectif")
+            ax1.tick_params(axis='x', rotation=45)
+            st.pyplot(fig1)
+
+    # --- Figure pour le second pays ---
+    with col_right:
+        df_2 = df[(df['country'] == country_2) & (df['year'] == year_selected)]
+
+        st.markdown(f"### {country_2} ({year_selected})")
+        if df_2.empty:
+            st.warning(f"Aucune donnée disponible pour {country_2} en {year_selected}.")
+        else:
+            fig2, ax2 = plt.subplots(figsize=(6, 4))
+            sns.countplot(data=df_2, x=var_unique, order=df_2[var_unique].value_counts().index, ax=ax2)
+            ax2.set_title(f"{country_2}")
+            ax2.set_xlabel(var_unique)
+            ax2.set_ylabel("Effectif")
+            ax2.tick_params(axis='x', rotation=45)
+            st.pyplot(fig2)
 
 if analyse == "📝 Performances":
     base_modele = data_modele()
