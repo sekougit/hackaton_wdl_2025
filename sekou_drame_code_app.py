@@ -79,8 +79,8 @@ if analyse == "📊 Analyses":
         selected_year = st.selectbox("Année", years, key="repartition_year")
 
     with col4:
-        hue_options = ['gender', 'urban', 'education', 'sector']
-        available_hues = [h for h in hue_options if h in df.columns]
+        #hue_options = ['gender', 'urban', 'education', 'sector']
+        available_hues = [h for h  in df.select_dtypes(include=['object', 'category']).columns]
         hue_col = st.selectbox("Variable de couleur (hue)", available_hues, key="repartition_hue")
 
     # --- Filtrage ---
