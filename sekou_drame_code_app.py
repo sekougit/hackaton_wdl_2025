@@ -41,7 +41,7 @@ datasets = load_data()
 
 # --------- Sélection des données à explorer ----------
 st.sidebar.image(
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/UEMOA_Logo.svg/1200px-UEMOA_Logo.svg.png",
+    "https://github.com/sekougit/hackaton_wdl_2025/blob/main/processed_data/uemoa.png",
     caption="Logo UEMOA"
 )
 section = st.sidebar.selectbox("🔍 Choisir une base de données :", list(datasets.keys()))
