@@ -251,23 +251,20 @@ if analyse == "📝 Performances":
     with tab3:
         st.subheader("📈 Prévisions")
         secteur = st.selectbox("Choisir un secteur", df_modele['sector'].unique())
-        df_plot = df_modele[df_modele['sector'] == secteur]
-
+        df_plot = df_modele[df_modele['sector'] == secteur].copy()
+        
+        # Création d'une colonne pour distinguer réalité vs prévision
+        df_real = df_plot[['year', 'gender', 'population']].copy()
+        df_real['type'] = 'Réalité'
+        df_real.rename(columns={'population': 'value'}, inplace=True)
+        
+        df_pred = df_plot[['year', 'gender', 'predicted_population']].copy()
+        df_pred['type'] = 'Prévision'
+        df_pred.rename(columns={'predicted_population': 'value'}, inplace=True)
+        
+        df_long = pd.concat([df_real, df_pred], ignore_index=True)
+        
         fig, ax = plt.subplots(figsize=(10, 6))
-
-        # Courbes réalité (population) en traits pleins
-        sns.lineplot(
-            data=df_plot, x='year', y='population', hue='gender', style='gender',
-            dashes=False,  # traits pleins
-            ax=ax, label='Réalité'
-        )
-
-        # Courbes prévisions (predicted_population) en pointillés
-        sns.lineplot(
-            data=df_plot, x='year', y='predicted_population', hue='gender', style='gender',
-            dashes=[(2, 2)],  # traits pointillés
-            ax=ax, label='Prévision'
-        )
-
+        sns.lineplot(data=df_long, x='year', y='value', hue='gender', style='type', markers=True, ax=ax)
         ax.set_title(f"Prévision vs Réalité – {secteur}")
         st.pyplot(fig)
