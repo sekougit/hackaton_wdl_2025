@@ -24,7 +24,9 @@ def data_modele():
     return df
 
 # ---------- Streamlit App ----------
-st.set_page_config(page_title="Emploi des jeunes dans l'UEMOA", layout="wide")
+st.set_page_config(page_title="Emploi des jeunes dans l'UEMOA", 
+                   page_icon="https://raw.githubusercontent.com/sekougit/hackaton_wdl_2025/main/processed_data/uemoa.png",
+                   layout="wide")
 
 # Injection favicon via HTML
 favicon_url = "https://raw.githubusercontent.com/sekougit/hackaton_wdl_2025/main/processed_data/uemoa.png"  # Remplace par ton lien copié
