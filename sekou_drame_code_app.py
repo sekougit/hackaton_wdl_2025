@@ -27,7 +27,7 @@ def data_modele():
 st.set_page_config(page_title="Emploi des jeunes dans l'UEMOA", layout="wide")
 
 # Injection favicon via HTML
-favicon_url = "https://www.google.com/search?sca_esv=c4c5c613b735bd05&sxsrf=AE3TifNjgN5R9ez__vafX3vH-aFV4-bHpQ:1750041183588&q=logo+uemoa&uds=AOm0WdE2fekQnsyfYEw8JPYozOKzKmVQgKcQTXDr67o6YvpSnoo3-GIPYTq8eNe79n1qJqr9tw47a6wcq5Rmeji146QzQa-jT96Keu3vz5TJ2hmv387uqOw9XE7I_V88s7e8ImaXMwP16CYpL_d3zFM-ggYZffs2tQ&udm=2&sa=X&ved=2ahUKEwjWhty48_SNAxXCdqQEHdQ3HiAQxKsJegQIDhAB&ictx=0&biw=1280&bih=585&dpr=1.5#vhid=i3KKqCmN1Hv9LM&vssid=mosaic"  # Remplace par ton lien copié
+favicon_url = "https://github.com/sekougit/hackaton_wdl_2025/blob/main/processed_data/uemoa.png"  # Remplace par ton lien copié
 st.markdown(
     f'<link rel="icon" href="{favicon_url}" type="image/png">',
     unsafe_allow_html=True
