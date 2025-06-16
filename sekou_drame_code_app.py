@@ -227,7 +227,7 @@ if analyse == "📊 Analyses":
             ax2.tick_params(axis='x', rotation=45)
             st.pyplot(fig2)
 
-if analyse == "📝 Performances":
+if analyse == "📝 Modéle":
     base_modele = data_modele()
 
     #base_modele = pd.DataFrame(base_modele)
