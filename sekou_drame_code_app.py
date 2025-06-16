@@ -40,6 +40,7 @@ st.markdown("Cette application permet d'explorer les données d'emploi, d'éduca
 datasets = load_data()
 
 # --------- Sélection des données à explorer ----------
+st.sidebar.image("https://www.google.com/search?q=image+uemoa&oq=i&gs_lcrp=EgZjaHJvbWUqBggBEEUYOzIGCAAQRRg5MgYIARBFGDsyBggCEEUYOzIGCAMQRRg7MgYIBBBFGDwyBggFEEUYPDIGCAYQRRg80gEINTQ0N2owajeoAgiwAgE&sourceid=chrome&ie=UTF-8#vhid=VjwMF17R-tj_IM&vssid=_FZBPaNPsPP-jkdUPzPSHyQM_40",caption="IMAGE")
 section = st.sidebar.selectbox("🔍 Choisir une base de données :", list(datasets.keys()))
 
 df = datasets[section]
