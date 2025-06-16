@@ -27,7 +27,7 @@ def data_modele():
 st.set_page_config(page_title="Emploi des jeunes dans l'UEMOA", layout="wide")
 
 # Injection favicon via HTML
-favicon_url = "https://github.com/sekougit/hackaton_wdl_2025/blob/main/processed_data/uemoa.png"  # Remplace par ton lien copié
+favicon_url = "https://raw.githubusercontent.com/sekougit/hackaton_wdl_2025/main/processed_data/uemoa.png"  # Remplace par ton lien copié
 st.markdown(
     f'<link rel="icon" href="{favicon_url}" type="image/png">',
     unsafe_allow_html=True
@@ -41,7 +41,7 @@ datasets = load_data()
 
 # --------- Sélection des données à explorer ----------
 st.sidebar.image(
-    "https://github.com/sekougit/hackaton_wdl_2025/blob/main/processed_data/uemoa.png",
+    "https://raw.githubusercontent.com/sekougit/hackaton_wdl_2025/main/processed_data/uemoa.png",
     caption="Logo UEMOA"
 )
 section = st.sidebar.selectbox("🔍 Choisir une base de données :", list(datasets.keys()))
