@@ -251,20 +251,10 @@ if analyse == "📝 Performances":
     with tab3:
         st.subheader("📈 Prévisions")
         secteur = st.selectbox("Choisir un secteur", df_modele['sector'].unique())
-        df_plot = df_modele[df_modele['sector'] == secteur].copy()
-        
-        # Création d'une colonne pour distinguer réalité vs prévision
-        df_real = df_plot[['year', 'gender', 'population']].copy()
-        df_real['type'] = 'Réalité'
-        df_real.rename(columns={'population': 'value'}, inplace=True)
-        
-        df_pred = df_plot[['year', 'gender', 'predicted_population']].copy()
-        df_pred['type'] = 'Prévision'
-        df_pred.rename(columns={'predicted_population': 'value'}, inplace=True)
-        
-        df_long = pd.concat([df_real, df_pred], ignore_index=True)
-        
+        df_plot = df_modele[df_modele['sector'] == secteur]
+
         fig, ax = plt.subplots(figsize=(10, 6))
-        sns.lineplot(data=df_long, x='year', y='value', hue='gender', style='type', markers=True, ax=ax)
+        sns.lineplot(data=df_plot, x='year', y='population', hue='gender', linestyle='--', ax=ax)
+        sns.lineplot(data=df_plot, x='year', y='predicted_population', hue='gender', linestyle='-', ax=ax)
         ax.set_title(f"Prévision vs Réalité – {secteur}")
         st.pyplot(fig)
