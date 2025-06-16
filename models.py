@@ -33,7 +33,7 @@ def train_model(df_modele):
 
     # Préprocesseur
     preprocessor = ColumnTransformer([
-        ('cat', OneHotEncoder(drop='first', sparse=False, handle_unknown='ignore'), cat_cols),
+        ('cat', OneHotEncoder(drop='first', sparse_output=False, handle_unknown='ignore'), cat_cols),
         ('spline', SplineTransformer(degree=3, n_knots=5), spline_col),
         ('num', 'passthrough', num_cols)
     ])
