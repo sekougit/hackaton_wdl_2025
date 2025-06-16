@@ -254,7 +254,20 @@ if analyse == "📝 Performances":
         df_plot = df_modele[df_modele['sector'] == secteur]
 
         fig, ax = plt.subplots(figsize=(10, 6))
-        sns.lineplot(data=df_plot, x='year', y='population', hue='gender', linestyle='--', ax=ax)
-        sns.lineplot(data=df_plot, x='year', y='predicted_population', hue='gender', linestyle='-', ax=ax)
+
+        # Courbes réalité (population) en traits pleins
+        sns.lineplot(
+            data=df_plot, x='year', y='population', hue='gender', style='gender',
+            dashes=False,  # traits pleins
+            ax=ax, label='Réalité'
+        )
+
+        # Courbes prévisions (predicted_population) en pointillés
+        sns.lineplot(
+            data=df_plot, x='year', y='predicted_population', hue='gender', style='gender',
+            dashes=[(2, 2)],  # traits pointillés
+            ax=ax, label='Prévision'
+        )
+
         ax.set_title(f"Prévision vs Réalité – {secteur}")
         st.pyplot(fig)
