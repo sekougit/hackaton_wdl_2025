@@ -28,13 +28,6 @@ st.set_page_config(page_title="Emploi des jeunes dans l'UEMOA",
                    page_icon="https://raw.githubusercontent.com/sekougit/hackaton_wdl_2025/main/processed_data/uemoa.png",
                    layout="wide")
 
-# Injection favicon via HTML
-favicon_url = "https://raw.githubusercontent.com/sekougit/hackaton_wdl_2025/main/processed_data/uemoa.png"  # Remplace par ton lien copié
-st.markdown(
-    f'<link rel="icon" href="{favicon_url}" type="image/png">',
-    unsafe_allow_html=True
-)
-
 
 st.title("📊 Analyse de l'emploi des jeunes (15–35 ans) dans l'UEMOA")
 st.markdown("Cette application permet d'explorer les données d'emploi, d'éducation et de secteur d'activité pour les jeunes dans les pays de l'UEMOA.")
@@ -59,7 +52,7 @@ with st.sidebar.expander("🎛️ Filtres"):
     max_year = int(df['year'].max())
     year_range = st.slider("Année :", min_value=min_year, max_value=max_year, value=(min_year, max_year))
 
-analyse = st.sidebar.radio("Analyses & modélisation", ["🏠 Accueil", "📊 Analyses", "📝 Modéle"])
+analyse = st.sidebar.radio("Analyses & modélisation", ["🏠 Accueil", "🧮 Données","📊 Analyses", "📝 Modéle"])
 
 # --------- Application des filtres ----------
 filtered_data = df[
@@ -67,8 +60,61 @@ filtered_data = df[
     (df['year'].between(year_range[0], year_range[1]))
 ]
 
-
 if analyse == "🏠 Accueil":
+        # Image en haut de la page
+    st.image(
+        "https://raw.githubusercontent.com/sekougit/hackaton_wdl_2025/main/processed_data/logo_wdl.png",  # Remplace par le lien direct vers ton image hébergée
+        caption="World Data Lab",
+        use_column_width=True
+    )
+
+    # Titre de la page
+    st.title("🌍 Hackathon World Data Lab 2025")
+
+    # Texte de présentation
+    st.markdown("""
+    Bienvenue sur la page de présentation du **Hackathon World Data Lab 2025** !
+
+    Ce hackathon réunit des équipes de jeunes innovateurs et analystes de données issus de plusieurs pays de la zone UEMOA, autour d'un objectif commun : **analyser, comprendre et prédire l'emploi des jeunes âgés de 15 à 35 ans à l’horizon 2030**, à partir de données démographiques, éducatives et économiques.
+
+    ---
+
+    ### 🎯 Objectifs
+    - Explorer les tendances d'emploi des jeunes dans la région.
+    - Identifier les déterminants clés de l'emploi selon le genre, l'âge, le niveau d'éducation et le secteur.
+    - Construire des modèles de prédiction fiables et reproductibles.
+    - Formuler des recommandations orientées politique publique.
+
+    ---
+
+    ### 🧰 Données utilisées
+    - Données démographiques et socio-économiques de la population jeune.
+    - Indicateurs liés à l'éducation, à l’urbanisation et aux secteurs d'activité.
+    - Projections à l’horizon 2030 selon plusieurs scénarios.
+
+    ---
+
+    ### 🧠 Notre approche
+    - Nettoyage et structuration rigoureuse des données.
+    - Analyses descriptives et visualisations interactives.
+    - Modélisation statistique (régression, splines, interactions).
+    - Interface web interactive pour l'exploration des résultats.
+
+    ---
+
+    ### 👥 Membres de l'équipe
+    - **Sekou Dramé** – Analyste Statisticien
+    - **ENSAE Dakar** – Support pédagogique et encadrement
+
+    ---
+
+    Ce projet est une contribution à l’analyse stratégique de l’emploi des jeunes dans la zone UEMOA.
+
+    **#DataForDevelopment | #WDLHackathon2025**
+    """)
+
+
+if analyse == "🧮 Données":
 	# --------- Affichage des données filtrées ----------
 	st.subheader("📁 Aperçu des données filtrées")
 	st.dataframe(filtered_data.head(100))
