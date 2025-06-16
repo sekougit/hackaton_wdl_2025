@@ -65,17 +65,34 @@ if analyse == "🏠 Accueil":
     st.image(
         "https://raw.githubusercontent.com/sekougit/hackaton_wdl_2025/main/processed_data/logo_wdl.png",  # Remplace par le lien direct vers ton image hébergée
         caption="World Data Lab",
-        use_column_width=True
+        use_column_width=False
     )
 
     # Titre de la page
     st.title("🌍 Hackathon World Data Lab 2025")
 
-    # Texte de présentation
+    # Texte de présentation enrichi
     st.markdown("""
     Bienvenue sur la page de présentation du **Hackathon World Data Lab 2025** !
 
-    Ce hackathon réunit des équipes de jeunes innovateurs et analystes de données issus de plusieurs pays de la zone UEMOA, autour d'un objectif commun : **analyser, comprendre et prédire l'emploi des jeunes âgés de 15 à 35 ans à l’horizon 2030**, à partir de données démographiques, éducatives et économiques.
+    ---
+
+    ### 🌍 Présentation du World Data Lab (WDL)
+
+    **World Data Lab (WDL)** est une organisation internationale spécialisée dans la production de données démographiques et économiques prédictives.  
+    Son objectif est de **rendre les données accessibles et exploitables** pour orienter les décisions publiques et privées.  
+    WDL développe des outils interactifs comme le **World Poverty Clock** et le **Global Education Monitor**.  
+    L'organisation collabore avec des gouvernements, ONG et entreprises pour **mieux cibler les politiques sociales**.  
+    Elle met un accent particulier sur l’Afrique, avec des projets pour anticiper les enjeux liés à la jeunesse, à l’emploi et à l’éducation.
+
+    ---
+
+    ### 🎯 Le Hackathon
+
+    Le hackathon organisé par le World Data Lab met l’accent sur l’emploi des jeunes dans 
+    la zone UEMOA, en mobilisant des données démographiques, éducatives et économiques pour analyser 
+    les tendances actuelles, comprendre les facteurs déterminants et prédire l’évolution du marché du 
+    travail des 15–35 ans à l’horizon 2030, dans une optique d’aide à la décision publique.
 
     ---
 
