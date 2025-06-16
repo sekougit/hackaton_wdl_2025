@@ -45,7 +45,7 @@ with st.sidebar.expander("🎛️ Filtres"):
     max_year = int(df['year'].max())
     year_range = st.slider("Année :", min_value=min_year, max_value=max_year, value=(min_year, max_year))
 
-analyse = st.sidebar.radio("Analyses & modélisation", ["🏠 Accueil", "📊 Analyses", "📝 Performances"])
+analyse = st.sidebar.radio("Analyses & modélisation", ["🏠 Accueil", "📊 Analyses", "📝 Modéle"])
 
 # --------- Application des filtres ----------
 filtered_data = df[
